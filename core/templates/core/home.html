@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}PlotPay - Innovative Property Financing{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-4">Your Path to Property Ownership Starts Here</h1>
+                <p class="lead mb-4">PlotPay provides innovative financing solutions for land purchase, construction, and property development. Join thousands of satisfied customers who've achieved their property dreams.</p>
+                {% if not user.is_authenticated %}
+                    <div class="d-flex gap-3">
+                        <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg">Get Started</a>
+                        <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg">Login</a>
+                    </div>
+                {% else %}
+                    <a href="{% url 'accounts:dashboard' %}" class="btn btn-light btn-lg">Go to Dashboard</a>
+                {% endif %}
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2073&q=80" 
+                     alt="Property Investment" class="img-fluid rounded-4 shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title text-center">Why Choose PlotPay?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-4">
+                            <i class="fas fa-rocket fa-3x text-primary"></i>
+                        </div>
+                        <h3 class="h4 card-title">Quick Approval</h3>
+                        <p class="card-text">Get your loan approved in as little as 48 hours with our streamlined application process.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-4">
+                            <i class="fas fa-hand-holding-dollar fa-3x text-primary"></i>
+                        </div>
+                        <h3 class="h4 card-title">Flexible Terms</h3>
+                        <p class="card-text">Customize your loan terms to fit your budget with our flexible payment options.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-4">
+                            <i class="fas fa-shield-alt fa-3x text-primary"></i>
+                        </div>
+                        <h3 class="h4 card-title">Secure Process</h3>
+                        <p class="card-text">Your data is protected with bank-level security throughout the entire process.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title text-center">Our Services</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1973&q=80" 
+                         class="card-img-top" alt="Land Purchase">
+                    <div class="card-body">
+                        <h3 class="h5 card-title">Land Purchase</h3>
+                        <p class="card-text">Secure financing for your dream plot with competitive rates and flexible terms.</p>
+                        <a href="#" class="btn btn-outline-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1970&q=80" 
+                         class="card-img-top" alt="Construction">
+                    <div class="card-body">
+                        <h3 class="h5 card-title">Construction</h3>
+                        <p class="card-text">Build your home step by step with our incremental construction loans.</p>
+                        <a href="#" class="btn btn-outline-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1970&q=80" 
+                         class="card-img-top" alt="Property Improvements">
+                    <div class="card-body">
+                        <h3 class="h5 card-title">Property Improvements</h3>
+                        <p class="card-text">Upgrade and enhance your property with our improvement financing options.</p>
+                        <a href="#" class="btn btn-outline-primary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <h2 class="display-4 fw-bold text-primary">5K+</h2>
+                <p class="text-muted">Happy Customers</p>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h2 class="display-4 fw-bold text-primary">$50M+</h2>
+                <p class="text-muted">Loans Disbursed</p>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h2 class="display-4 fw-bold text-primary">98%</h2>
+                <p class="text-muted">Success Rate</p>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h2 class="display-4 fw-bold text-primary">24/7</h2>
+                <p class="text-muted">Customer Support</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="h1 mb-4">Ready to Start Your Property Journey?</h2>
+        <p class="lead mb-4">Join thousands of satisfied customers who have achieved their property dreams with PlotPay.</p>
+        {% if not user.is_authenticated %}
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg">Apply Now</a>
+                <a href="{% url 'core:contact' %}" class="btn btn-outline-light btn-lg">Contact Us</a>
+            </div>
+        {% else %}
+            <a href="{% url 'accounts:dashboard' %}" class="btn btn-light btn-lg">View Your Applications</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %} 

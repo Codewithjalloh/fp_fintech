@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Dashboard - PlotPay{% endblock %}
+
+{% block content %}
+<!-- Dashboard Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">Welcome, {{ user.get_full_name|default:user.username }}!</h1>
+        <p class="lead">Manage your properties, loans, and repayments in one place.</p>
+    </div>
+</section>
+
+<!-- Dashboard Content -->
+<section class="py-5">
+    <div class="container">
+        <!-- Quick Stats -->
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Properties</h5>
+                        <h2 class="display-4">{{ properties.count }}</h2>
+                        <a href="#properties" class="text-white text-decoration-none">View Properties →</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Loans</h5>
+                        <h2 class="display-4">{{ loan_applications.count }}</h2>
+                        <a href="#loans" class="text-white text-decoration-none">View Loans →</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Documents</h5>
+                        <h2 class="display-4">{{ documents.count }}</h2>
+                        <a href="#documents" class="text-white text-decoration-none">View Documents →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties Section -->
+        <div id="properties" class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title">My Properties</h2>
+                <a href="{% url 'accounts:add_property' %}" class="btn btn-primary">Add New Property</a>
+            </div>
+            {% if properties %}
+                <div class="row">
+                    {% for property in properties %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ property.get_property_type_display }}</h5>
+                                    <p class="card-text">
+                                        <strong>Location:</strong> {{ property.location }}<br>
+                                        <strong>Size:</strong> {{ property.size }} m²<br>
+                                        <strong>Value:</strong> ${{ property.estimated_value }}
+                                    </p>
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{% url 'accounts:property_detail' property.id %}" class="btn btn-outline-primary">View Details</a>
+                                        <a href="{% url 'loans:apply' property.id %}" class="btn btn-primary">Apply for Loan</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    You haven't added any properties yet. <a href="{% url 'accounts:add_property' %}" class="alert-link">Add your first property</a> to get started.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Loan Applications Section -->
+        <div id="loans" class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title">Loan Applications</h2>
+                <a href="{% url 'loans:apply' %}" class="btn btn-primary">New Application</a>
+            </div>
+            {% if loan_applications %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for application in loan_applications %}
+                                <tr>
+                                    <td>{{ application.property.get_property_type_display }}</td>
+                                    <td>${{ application.amount_requested }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ application.status|status_color }}">
+                                            {{ application.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ application.application_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'loans:application_detail' application.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    You haven't submitted any loan applications yet. <a href="{% url 'loans:apply' %}" class="alert-link">Apply for a loan</a> to get started.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Documents Section -->
+        <div id="documents">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title">Property Documents</h2>
+                <a href="{% url 'accounts:upload_document' %}" class="btn btn-primary">Upload Document</a>
+            </div>
+            {% if documents %}
+                <div class="row">
+                    {% for document in documents %}
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ document.get_document_type_display }}</h5>
+                                    <p class="card-text">
+                                        <strong>Upload Date:</strong> {{ document.upload_date|date:"M d, Y" }}<br>
+                                        <strong>Status:</strong> 
+                                        <span class="badge bg-{{ document.verified|yesno:'success,warning' }}">
+                                            {{ document.verified|yesno:'Verified,Pending' }}
+                                        </span>
+                                    </p>
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{{ document.document_file.url }}" class="btn btn-outline-primary" target="_blank">View Document</a>
+                                        <a href="{% url 'accounts:delete_document' document.id %}" class="btn btn-outline-danger">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    You haven't uploaded any documents yet. <a href="{% url 'accounts:upload_document' %}" class="alert-link">Upload your first document</a> to get started.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %} 

@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - PlotPay{% endblock %}
+
+{% block content %}
+<!-- Contact Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">Get in Touch</h1>
+        <p class="lead">We're here to help you achieve your property ownership dreams.</p>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Contact Form -->
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <div class="card h-100">
+                    <div class="card-body p-4">
+                        <h2 class="section-title mb-4">Send Us a Message</h2>
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
+                                        <label for="name">Your Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required>
+                                        <label for="email">Your Email</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required>
+                                        <label for="subject">Subject</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control" id="message" name="message" placeholder="Your Message" style="height: 150px" required></textarea>
+                                        <label for="message">Your Message</label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-lg">Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="col-lg-5">
+                <div class="card h-100">
+                    <div class="card-body p-4">
+                        <h2 class="section-title mb-4">Contact Information</h2>
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-primary rounded-circle p-3 me-3">
+                                <i class="fas fa-map-marker-alt text-white fa-lg"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Office Location</h5>
+                                <p class="mb-0">123 Finance Street<br>City, State 12345</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-primary rounded-circle p-3 me-3">
+                                <i class="fas fa-phone text-white fa-lg"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Phone</h5>
+                                <p class="mb-0">+1 (234) 567-8900</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="bg-primary rounded-circle p-3 me-3">
+                                <i class="fas fa-envelope text-white fa-lg"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Email</h5>
+                                <p class="mb-0">info@plotpay.com</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary rounded-circle p-3 me-3">
+                                <i class="fas fa-clock text-white fa-lg"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-1">Business Hours</h5>
+                                <p class="mb-0">Monday - Friday: 9:00 AM - 5:00 PM<br>
+                                Saturday: 10:00 AM - 2:00 PM<br>
+                                Sunday: Closed</p>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <h5 class="mb-3">Follow Us</h5>
+                        <div class="social-links">
+                            <a href="#" class="me-2"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                            <a href="#" class="me-2"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="ratio ratio-21x9">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345096034!2d144.95373631531978!3d-37.817327679751734!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d4c2b349649%3A0xb6899234e561db11!2sEmirates%20Stadium!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" 
+                            style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-5">Frequently Asked Questions</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                What documents do I need to apply for a loan?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                <p>To apply for a loan with PlotPay, you'll need:</p>
+                                <ul>
+                                    <li>Valid government-issued ID</li>
+                                    <li>Proof of income (pay stubs, bank statements)</li>
+                                    <li>Property documents (if applicable)</li>
+                                    <li>Proof of address</li>
+                                    <li>Employment verification</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                How long does the loan approval process take?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Our streamlined approval process typically takes 3-5 business days from the submission of a complete application. This may vary depending on the loan amount and type of property financing requested.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                What are the interest rates and repayment terms?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Our interest rates are competitive and vary based on the loan type, amount, and your credit profile. We offer flexible repayment terms ranging from 12 to 60 months. Contact our team for personalized rates and terms.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<script>
+    // Form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}
+
+{% endblock %} 

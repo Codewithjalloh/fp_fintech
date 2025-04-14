@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - PlotPay{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-5">
+                            <h2 class="section-title">{{ title }}</h2>
+                            <p class="text-muted">Fill in the details of your property to get started with PlotPay</p>
+                        </div>
+
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form.property_type }}
+                                        <label for="{{ form.property_type.id_for_label }}">
+                                            <i class="bi bi-house me-2"></i>Property Type
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Please select a property type.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form.location }}
+                                        <label for="{{ form.location.id_for_label }}">
+                                            <i class="bi bi-geo-alt me-2"></i>Location
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Please provide the property location.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form.size }}
+                                        <label for="{{ form.size.id_for_label }}">
+                                            <i class="bi bi-rulers me-2"></i>Size (m²)
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Please provide the property size.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ form.estimated_value }}
+                                        <label for="{{ form.estimated_value.id_for_label }}">
+                                            <i class="bi bi-currency-dollar me-2"></i>Estimated Value
+                                        </label>
+                                        <div class="invalid-feedback">
+                                            Please provide the estimated value.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    {{ form.description }}
+                                    <label for="{{ form.description.id_for_label }}">
+                                        <i class="bi bi-card-text me-2"></i>Description
+                                    </label>
+                                    <div class="form-text">
+                                        Provide details about the property's features, condition, and any other relevant information.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save me-2"></i>Save Property
+                                </button>
+                                <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .form-floating > .form-control {
+        height: calc(3.5rem + 2px);
+        padding: 1rem 0.75rem;
+    }
+    
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+    }
+    
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        opacity: 0.65;
+        transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    }
+    
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .section-title {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+</style>
+{% endblock %} 
