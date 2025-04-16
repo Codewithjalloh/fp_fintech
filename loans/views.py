@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import LoanApplicationForm, LoanDisbursementForm, RepaymentForm
 from .models import LoanApplication, LoanDisbursement, Repayment
 from accounts.models import Property
+from django.utils import timezone
 
 # Create your views here.
 
@@ -42,9 +43,30 @@ def loan_application_detail(request, pk):
     return render(request, 'loans/application_detail.html', {'application': application})
 
 @login_required
-def repayments(request):
+def loan_repayments(request):
     repayments = Repayment.objects.filter(loan_disbursement__loan_application__user=request.user)
     return render(request, 'loans/repayments.html', {'repayments': repayments})
+
+@login_required
+def loan_repayment_detail(request, pk):
+    repayment = get_object_or_404(Repayment, pk=pk, loan_disbursement__loan_application__user=request.user)
+    return render(request, 'loans/repayment_detail.html', {'repayment': repayment})
+
+@login_required
+def loan_repayment_pay(request, pk):
+    repayment = get_object_or_404(Repayment, pk=pk, loan_disbursement__loan_application__user=request.user)
+    if repayment.status == 'paid':
+        messages.error(request, 'This repayment has already been paid.')
+        return redirect('loans:repayment_detail', pk=repayment.pk)
+    
+    if request.method == 'POST':
+        repayment.status = 'paid'
+        repayment.payment_date = timezone.now()
+        repayment.save()
+        messages.success(request, 'Repayment marked as paid successfully.')
+        return redirect('loans:repayment_detail', pk=repayment.pk)
+    
+    return redirect('loans:repayment_detail', pk=repayment.pk)
 
 @login_required
 def loan_application_edit(request, pk):

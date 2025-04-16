@@ -1,54 +1,56 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import LoanApplication, LoanDisbursement, Repayment
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 class RepaymentInline(admin.TabularInline):
     model = Repayment
     extra = 0
-    fields = ('amount_paid', 'payment_date', 'payment_method', 'is_late', 'late_fee')
     readonly_fields = ('payment_date',)
+    fields = ('amount_paid', 'payment_date', 'payment_method', 'is_late', 'late_fee', 'notes')
     can_delete = False
 
-class LoanDisbursementInline(admin.TabularInline):
+    def has_add_permission(self, request, obj=None):
+        return False
+
+class LoanDisbursementInline(admin.StackedInline):
     model = LoanDisbursement
     extra = 0
-    fields = ('disbursement_amount', 'disbursement_date', 'disbursement_method', 'mobile_money_transaction_id')
     readonly_fields = ('disbursement_date',)
+    fields = ('disbursement_amount', 'disbursement_date', 'disbursement_method', 'mobile_money_transaction_id', 'notes')
     can_delete = False
 
+    def has_add_permission(self, request, obj=None):
+        return False
+
+@admin.register(LoanApplication)
 class LoanApplicationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'property', 'amount_requested', 'loan_purpose', 'status', 'application_date', 'action_buttons')
+    list_display = ('id', 'user_link', 'property_link', 'amount_requested', 'loan_purpose', 
+                   'status', 'application_date', 'action_buttons')
     list_filter = ('status', 'loan_purpose', 'application_date')
-    search_fields = ('user__username', 'property__location', 'notes')
-    list_select_related = ('user', 'property')
+    search_fields = ('user__username', 'user__email', 'property__location')
+    readonly_fields = ('application_date', 'review_date', 'approval_date', 'disbursement_date', 'user', 'property')
     inlines = [LoanDisbursementInline, RepaymentInline]
-    fieldsets = (
-        ('Basic Information', {
-            'fields': ('user', 'property', 'amount_requested', 'loan_purpose')
-        }),
-        ('Loan Details', {
-            'fields': ('repayment_period', 'interest_rate', 'status')
-        }),
-        ('Dates', {
-            'fields': ('application_date', 'review_date', 'approval_date', 'disbursement_date'),
-            'classes': ('collapse',)
-        }),
-        ('Additional Information', {
-            'fields': ('notes',),
-            'classes': ('collapse',)
-        }),
-    )
-    readonly_fields = ('application_date', 'review_date', 'approval_date', 'disbursement_date')
+    date_hierarchy = 'application_date'
+    ordering = ('-application_date',)
     actions = ['approve_applications', 'reject_applications']
 
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('user', 'property')
+    def user_link(self, obj):
+        url = reverse('admin:auth_user_change', args=[obj.user.id])
+        return format_html('<a href="{}">{}</a>', url, obj.user.username)
+    user_link.short_description = 'User'
+
+    def property_link(self, obj):
+        url = reverse('admin:accounts_property_change', args=[obj.property.id])
+        return format_html('<a href="{}">{}</a>', url, obj.property.location)
+    property_link.short_description = 'Property'
 
     def action_buttons(self, obj):
         if obj.status == 'pending':
             return format_html(
                 '<a class="button" href="{}">Review</a>',
-                f'/admin/loans/loanapplication/{obj.id}/change/'
+                reverse('admin:loans_loanapplication_change', args=[obj.id])
             )
         return '-'
     action_buttons.short_description = 'Actions'
@@ -61,56 +63,33 @@ class LoanApplicationAdmin(admin.ModelAdmin):
     def reject_applications(self, request, queryset):
         queryset.update(status='rejected')
 
+@admin.register(LoanDisbursement)
 class LoanDisbursementAdmin(admin.ModelAdmin):
-    list_display = ('id', 'loan_application', 'disbursement_amount', 'disbursement_date', 'disbursement_method', 'transaction_id')
+    list_display = ('id', 'loan_application_link', 'disbursement_amount', 'disbursement_date', 'disbursement_method')
     list_filter = ('disbursement_date', 'disbursement_method')
     search_fields = ('loan_application__user__username', 'loan_application__property__location', 'mobile_money_transaction_id')
-    list_select_related = ('loan_application',)
-    fieldsets = (
-        ('Basic Information', {
-            'fields': ('loan_application', 'disbursement_amount', 'disbursement_date')
-        }),
-        ('Disbursement Details', {
-            'fields': ('mobile_money_transaction_id', 'disbursement_method')
-        }),
-        ('Notes', {
-            'fields': ('notes',)
-        }),
-    )
-    readonly_fields = ('disbursement_date',)
+    readonly_fields = ('disbursement_date', 'loan_application')
+    date_hierarchy = 'disbursement_date'
+    ordering = ('-disbursement_date',)
 
-    def transaction_id(self, obj):
-        return obj.mobile_money_transaction_id
-    transaction_id.short_description = 'Transaction ID'
+    def loan_application_link(self, obj):
+        url = reverse('admin:loans_loanapplication_change', args=[obj.loan_application.id])
+        return format_html('<a href="{}">Application #{}</a>', url, obj.loan_application.id)
+    loan_application_link.short_description = 'Loan Application'
 
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('loan_application')
-
+@admin.register(Repayment)
 class RepaymentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'loan_application', 'amount_paid', 'payment_date', 'payment_method', 'is_late', 'late_fee', 'transaction_id')
+    list_display = ('id', 'loan_application_link', 'amount_paid', 'payment_date', 'payment_method', 'is_late')
     list_filter = ('payment_date', 'payment_method', 'is_late')
     search_fields = ('loan_application__user__username', 'mobile_money_transaction_id')
-    list_select_related = ('loan_application',)
-    fieldsets = (
-        ('Basic Information', {
-            'fields': ('loan_application', 'amount_paid', 'payment_date')
-        }),
-        ('Payment Details', {
-            'fields': ('mobile_money_transaction_id', 'payment_method', 'is_late', 'late_fee')
-        }),
-        ('Notes', {
-            'fields': ('notes',)
-        }),
-    )
-    readonly_fields = ('payment_date',)
+    readonly_fields = ('payment_date', 'loan_application')
+    date_hierarchy = 'payment_date'
+    ordering = ('-payment_date',)
 
-    def transaction_id(self, obj):
-        return obj.mobile_money_transaction_id
-    transaction_id.short_description = 'Transaction ID'
+    def loan_application_link(self, obj):
+        url = reverse('admin:loans_loanapplication_change', args=[obj.loan_application.id])
+        return format_html('<a href="{}">Application #{}</a>', url, obj.loan_application.id)
+    loan_application_link.short_description = 'Loan Application'
 
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('loan_application')
-
-admin.site.register(LoanApplication, LoanApplicationAdmin)
-admin.site.register(LoanDisbursement, LoanDisbursementAdmin)
-admin.site.register(Repayment, RepaymentAdmin)
+    def has_add_permission(self, request):
+        return False
