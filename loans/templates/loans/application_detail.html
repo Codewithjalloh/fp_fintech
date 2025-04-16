@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Loan Application Details - PlotPay{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-5">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="section-title mb-0">Loan Application Details</h2>
+                            <a href="{% url 'loans:applications' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Applications
+                            </a>
+                        </div>
+
+                        <div class="row g-4">
+                            <!-- Application Status -->
+                            <div class="col-12">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5 class="mb-1">Application Status</h5>
+                                                <p class="text-muted mb-0">Last updated: {{ application.application_date|date:"M d, Y" }}</p>
+                                            </div>
+                                            <span class="badge {% if application.status == 'pending' %}bg-warning
+                                                              {% elif application.status == 'approved' %}bg-success
+                                                              {% elif application.status == 'rejected' %}bg-danger
+                                                              {% else %}bg-secondary{% endif %} fs-6">
+                                                {{ application.get_status_display }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Property Details -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">
+                                            <i class="bi bi-house me-2"></i>Property Details
+                                        </h5>
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2">
+                                                <strong>Location:</strong>
+                                                <span class="float-end">{{ application.property.location }}</span>
+                                            </li>
+                                            <li class="mb-2">
+                                                <strong>Type:</strong>
+                                                <span class="float-end">{{ application.property.get_property_type_display }}</span>
+                                            </li>
+                                            <li class="mb-2">
+                                                <strong>Size:</strong>
+                                                <span class="float-end">{{ application.property.size }} sq ft</span>
+                                            </li>
+                                            <li>
+                                                <strong>Estimated Value:</strong>
+                                                <span class="float-end">${{ application.property.estimated_value|intcomma }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Loan Details -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">
+                                            <i class="bi bi-bank me-2"></i>Loan Details
+                                        </h5>
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-2">
+                                                <strong>Amount Requested:</strong>
+                                                <span class="float-end">${{ application.amount_requested|intcomma }}</span>
+                                            </li>
+                                            <li class="mb-2">
+                                                <strong>Purpose:</strong>
+                                                <span class="float-end">{{ application.get_loan_purpose_display }}</span>
+                                            </li>
+                                            <li class="mb-2">
+                                                <strong>Repayment Period:</strong>
+                                                <span class="float-end">{{ application.repayment_period }} months</span>
+                                            </li>
+                                            <li class="mb-2">
+                                                <strong>Interest Rate:</strong>
+                                                <span class="float-end">{{ application.interest_rate }}%</span>
+                                            </li>
+                                            <li>
+                                                <strong>Monthly Payment:</strong>
+                                                <span class="float-end">${{ application.monthly_payment|intcomma }}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Notes -->
+                            {% if application.notes %}
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-4">
+                                                <i class="bi bi-card-text me-2"></i>Additional Notes
+                                            </h5>
+                                            <p class="mb-0">{{ application.notes }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <!-- Actions -->
+                            {% if application.status == 'pending' %}
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-end gap-3">
+                                        <a href="{% url 'loans:application_edit' application.pk %}" class="btn btn-primary">
+                                            <i class="bi bi-pencil me-2"></i>Edit Application
+                                        </a>
+                                        <form method="post" action="{% url 'loans:application_cancel' application.pk %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this application?')">
+                                                <i class="bi bi-x-circle me-2"></i>Cancel Application
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .card {
+        border-radius: 1rem;
+    }
+    
+    .card-title {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    
+    .badge {
+        font-size: 1rem;
+        padding: 0.5em 1em;
+    }
+    
+    .section-title {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .list-unstyled li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .list-unstyled li:last-child {
+        border-bottom: none;
+    }
+</style>
+{% endblock %} 

@@ -17,7 +17,7 @@ class LoanDisbursementInline(admin.TabularInline):
     can_delete = False
 
 class LoanApplicationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'property', 'amount_requested', 'loan_purpose', 'status', 'application_date', 'actions')
+    list_display = ('id', 'user', 'property', 'amount_requested', 'loan_purpose', 'status', 'application_date', 'action_buttons')
     list_filter = ('status', 'loan_purpose', 'application_date')
     search_fields = ('user__username', 'property__location', 'notes')
     list_select_related = ('user', 'property')
@@ -44,14 +44,14 @@ class LoanApplicationAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('user', 'property')
 
-    def actions(self, obj):
+    def action_buttons(self, obj):
         if obj.status == 'pending':
             return format_html(
                 '<a class="button" href="{}">Review</a>',
                 f'/admin/loans/loanapplication/{obj.id}/change/'
             )
         return '-'
-    actions.short_description = 'Actions'
+    action_buttons.short_description = 'Actions'
 
     @admin.action(description='Approve selected applications')
     def approve_applications(self, request, queryset):
