@@ -19,8 +19,7 @@ PlotPay is a Django-based web application for managing property loans and paymen
 - **Authentication**: Django Allauth
 - **Form Handling**: Django Crispy Forms with Bootstrap 5
 - **Storage**: Django Storages with Boto3 for AWS S3
-- **Static Files**: WhiteNoise
-- **Production Server**: Gunicorn
+
 
 ## Prerequisites
 
